@@ -1,5 +1,6 @@
 require 'sinatra'
 require 'sinatra/reloader' if development?
+require 'sinatra/flash'
 require 'slim'
 require 'sass'
 require './song'
@@ -16,6 +17,10 @@ end
 
 configure :production do
   DataMapper.setup(:default, ENV['DATABASE_URL'])
+end
+
+before do
+  set_title
 end
 
 get '/' do
@@ -51,7 +56,7 @@ end
 
 get '/songs' do
   halt(401,'Not Authorized') unless session[:admin]
-  @songs = Song.all
+  find_songs
   slim :songs
 end
 
@@ -63,32 +68,33 @@ end
 
 post '/songs' do
   halt(401,'Not Authorized') unless session[:admin]
-  song = Song.create(params[:song])
-  redirect to("/songs/#{song.id}")
+  create_song
+  flash[:notice] = "Song added" if create_song
+  redirect to("/songs/#{@song.id}")
 end
 
 get '/songs/:id' do
   halt(401,'Not Authorized') unless session[:admin]
-  @song = Song.get(params[:id])
+  @song = find_song
   slim :show_song
 end
 
 get '/songs/:id/edit' do
   halt(401,'Not Authorized') unless session[:admin]
-  @song = Song.get(params[:id])
+  @song = find_song
   slim :edit_song
 end
 
 put '/songs/:id' do
   halt(401,'Not Authorized') unless session[:admin]
-  song = Song.get(params[:id])
+  song = find_song
   song.update(params[:song])
   redirect to("/songs/#{song.id}")
 end
 
 delete '/songs/:id' do
   halt(401,'Not Authorized') unless session[:admin]
-  Song.get(params[:id]).destroy
+  find_song.destroy
   redirect to('/songs')
 end
 
@@ -97,4 +103,20 @@ not_found do
 end
 
 get('/styles.css'){ scss :styles }
+
+helpers do
+  def css(*stylesheets)
+    stylesheets.map do |stylesheet|
+      "<link href=\"/#{stylesheet}.css\" media=\"screen, projection\" rel=\"stylesheet\" />"
+    end.join
+  end
+
+  def current?(path='/')
+    (request.path==path || request.path==path+'/') ? "current" : nil
+  end
+
+  def set_title
+    @title ||= "Songs by Sinatra"
+  end
+end
 
