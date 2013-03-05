@@ -68,7 +68,6 @@ end
 
 post '/songs' do
   halt(401,'Not Authorized') unless session[:admin]
-  create_song
   flash[:notice] = "Song added" if create_song
   redirect to("/songs/#{@song.id}")
 end
