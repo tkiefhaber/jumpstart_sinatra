@@ -14,5 +14,4 @@ class Song
   end
 end
 
-# DataMapper.auto_upgrade!
 DataMapper.finalize
