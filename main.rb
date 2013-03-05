@@ -11,7 +11,7 @@ configure do
 end
 
 configure :development do
-  DataMapper.setup(:default, "sqlite3://#{Dir.pws}/development.db")
+  DataMapper.setup(:default, "sqlite3://#{Dir.pwd}/development.db")
 end
 
 configure :production do
