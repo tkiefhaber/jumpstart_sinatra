@@ -4,6 +4,8 @@ require 'sinatra/flash'
 require 'slim'
 require 'sass'
 require 'pony'
+require 'v8'
+require 'coffee-script'
 require './song'
 
 configure do
@@ -117,6 +119,7 @@ not_found do
 end
 
 get('/styles.css'){ scss :styles }
+get('/javascripts/application.js'){ coffee :application }
 
 helpers do
   def css(*stylesheets)
