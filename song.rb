@@ -17,7 +17,7 @@ end
 
 module SongHelpers
   def find_songs
-    @songs = Song.all
+    @songs = Song.all(:order => (:likes.desc))
   end
 
   def find_song
