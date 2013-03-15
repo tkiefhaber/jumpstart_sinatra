@@ -145,9 +145,9 @@ helpers do
         :address => 'smtp.gmail.com',
         :port => '587',
         :enable_starttls_auto => true,
-        :username => 'tkiefhab',
+        :user_name => 'tkiefhab',
         :password => 't0m@kiEf',
-        :authentication => 'plain',
+        :authentication => :plain,
         :domain => 'localhost.localdomain'
       }
     )
